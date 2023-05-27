@@ -1,34 +1,82 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
-
+import './App.scss'
+import { useEffect, useState } from 'react'
+import axios from 'axios'
 function App() {
-  const [count, setCount] = useState(0)
+
+  const [data, setData] = useState({});
+  const [location, setLocation] = useState('');
+  const [code, setCode] = useState('');
+  // const searchLocation = () => {
+  //   axios.get(url).then((response) => {
+  //     setData(response.data);
+  //     console.log(response.data)
+  //   })
+  // }
+
+  const searchLocation = (e) => {
+    if (e.key === 'Enter') {
+      const url = `https://api.openweathermap.org/data/2.5/weather?q=${location}&appid=42ca4fa34f9b69dfb8909616edef1f9b&units=metric`;
+      fetch(url)
+        .then(res => res.json())
+        .then(json => { setData(json); setCode(json.cod) })
+        .catch(err => {
+          console.warn(err);
+        })
+    }
+  }
+  console.log(code);
+  useEffect(() => {
+    {
+      fetch(`https://api.openweathermap.org/data/2.5/weather?q=erevan&appid=42ca4fa34f9b69dfb8909616edef1f9b&units=metric`)
+        .then(res => res.json())
+        .then(json => { setData(json); })
+    }
+  }, [])
+  console.log(data);
+  console.log(location);
 
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+    <div className='app'>
+      <div className="search">
+        <input type="text" value={location} onKeyDown={searchLocation}
+          onChange={event => setLocation(event.target.value)} placeholder='Enter Location' />
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
+      {
+        code==='404'?(
+          <div className="no-city"><div className="no-city__wrapper">
+            <p>City not found</p>
+          </div></div>
+        ):(<>
+          <div className="container">
+        <div className="top">
+          <div className="location">
+            <p>{data.name}</p>
+          </div>
+          <div className="temp">
+            <h2>{data.main?.temp}°C</h2>
+          </div>
+          <div className="description">
+            <p className='description__clouds'>{data.weather?.[0].main}</p>
+          </div>
+        </div>
+        <div className="bottom">
+          <div className="feels">
+            <p className='feels__value'>{data.main?.feels_like}°C</p>
+            <p>Feels Like</p>
+          </div>
+          <div className="humidity">
+            <p className='humidity__value'>{data.main?.humidity}%</p>
+            <p>Humidity</p>
+          </div>
+          <div className="wind">
+            <p className='wind__value'>{data.wind?.speed} MPH</p>
+            <p>Wind Speed</p>
+          </div>
+        </div>
       </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+          </>)
+      }
+    </div>
   )
 }
 
