@@ -105,7 +105,7 @@ h2 {
   display: flex;
   align-items: center;
   justify-content: center;
-
+  padding: 0 15px;
   margin-top: 80px;
 
   &__wrapper {
@@ -127,6 +127,11 @@ h2 {
   .app::before {
     background: url('../public/assets/mobile.jpg') no-repeat center center/cover;
   }
+  .no-city__wrapper{
+    p{
+      font-size: 4rem;
+    }
+  }
 }
 @media(max-width:540px) {
   p {
@@ -138,5 +143,11 @@ h2 {
   .container{
     height: 600px;
 
+  }
+  .no-city__wrapper{
+    p{
+      font-size: 2rem;
+      
+    }
   }
 }
